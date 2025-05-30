@@ -1,5 +1,5 @@
 'use server';
-import { Bell, HardDrive, HelpCircle, Settings } from "lucide-react";
+import { Bell, Building2, HardDrive, HelpCircle, Settings } from "lucide-react";
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -61,38 +61,32 @@ export async function Header() {
 					<DropdownMenuTrigger asChild>
 						<Button variant="ghost" className="p-0 flex items-center gap-2 font-semibold">
 							{/* Need a logo */}
-							{/* <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                <span className="text-primary-foreground font-bold">
-                  <Image
-                    width={24}
-                    height={24}
-                    src="/public/cloud.svg"
-                    alt="cloud"
-                  />
-                </span>
-              </div>*/}
+					
 							<span>{organizationMain?.[0]?.name}</span>
 							<ChevronDown className="h-4 w-4 ml-1" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="start" className="w-56">
-						<DropdownMenuLabel>Sources</DropdownMenuLabel>
+						<DropdownMenuLabel>Organizações</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem>
-							<HardDrive className="mr-2 h-4 w-4" />
-							<span>Local Files</span>
+								
+				 { organizations?.map((organization) => (	
+						<DropdownMenuItem key={organization.id}>
+							<Building2 className="mr-2 h-4 w-4" />
+							<span>{organization.name}</span>
 						</DropdownMenuItem>
-				
+						)) }
+						<DropdownMenuSeparator />
 		 
 						<DropdownMenuItem>
 							<Plus className="mr-2 h-4 w-4" />
-							<span>Add New Source</span>
+							<span>Adicionar nova</span>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 				<div className="relative flex-1 max-w-xl">
 					<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-					<Input type="search" placeholder="Search in Drive" className="w-full pl-8 bg-muted/50" />
+					<Input type="search" placeholder="Search in Drive" className="w-full pl-8 bg-muted/30" />
 				</div>
 				<div className="flex items-center gap-2">
 					<ModeToggle />
@@ -119,10 +113,12 @@ export async function Header() {
 								<>
 									<DropdownMenuLabel>Minha conta</DropdownMenuLabel>
 									<DropdownMenuSeparator />
-									<DropdownMenuItem onClick={() => {redirect("/profile")}} className="flex flex-col cursor-pointer hover:bg-muted items-start focus:bg-transparent">
+									 <Link href="/profile">
+									 
+									 <DropdownMenuItem className="flex flex-col cursor-pointer hover:bg-muted items-start focus:bg-transparent">
 										<div className="font-medium">{userName || "User"}</div>
 										<div className="text-xs text-muted-foreground">{userEmail || "No email"}</div>
-									</DropdownMenuItem>
+									</DropdownMenuItem></Link>
 									<DropdownMenuSeparator />
 									<DropdownMenuItem >
 								     <SignOutButton>

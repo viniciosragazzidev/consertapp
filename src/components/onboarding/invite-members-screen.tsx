@@ -175,7 +175,7 @@ export function InviteMembersScreen({
               <div className="border rounded-md overflow-hidden">
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-muted/50">
+                    <tr className="bg-muted/30">
                       <th className="text-left p-3 font-medium">Email</th>
                       <th className="text-left p-3 font-medium">Cargo</th>
                       <th className="p-3 w-10"></th>

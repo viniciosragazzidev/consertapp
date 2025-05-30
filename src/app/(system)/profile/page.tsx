@@ -64,7 +64,7 @@ export default async function Page() {
         <TabsContent value="profile">
           {/* User Info Card */}
       <Card className="mb-6 bg-card/50 pb-10">
-        <CardHeader className="bg-muted/50 py-6">
+        <CardHeader className="bg-muted/30 py-6">
           <CardTitle>Informações do Usuário</CardTitle>
           <CardDescription>Suas informações pessoais e ajustes do perfil.</CardDescription>
         </CardHeader>
@@ -79,7 +79,7 @@ export default async function Page() {
                   className="size-24 border rounded-md object-cover"
                 />
               ) : (
-                <div className="size-24 border rounded-md bg-muted/50 text-primary flex items-center justify-center">
+                <div className="size-24 border rounded-md bg-muted/30 text-primary flex items-center justify-center">
                   <span className="uppercase text-xl font-medium">{session.user.name.slice(0, 2)}</span>
                 </div>
               )}
@@ -94,7 +94,7 @@ export default async function Page() {
                 </h2>
                 <p className="text-sm text-muted-foreground">{session.user.email}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="outline" className="bg-muted/50">
+                  <Badge variant="outline" className="bg-muted/30">
                     {session.user.role}
                   </Badge>
                 </div>
@@ -112,7 +112,7 @@ export default async function Page() {
 
       {/* Permissões Card */}
       <Card className="mb-6 bg-card/50 pb-10">
-        <CardHeader className="bg-muted/50 py-6">
+        <CardHeader className="bg-muted/30 py-6">
           <CardTitle className="flex items-center gap-2">
             <Shield className="size-4 text-primary" />
             Permissões
@@ -123,7 +123,7 @@ export default async function Page() {
           <div className="border rounded-md overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-muted/50">
+                <tr className="bg-muted/30">
                   <th className="text-left p-3 font-medium">Permission</th>
                   <th className="text-left p-3 font-medium">Status</th>
                 </tr>
@@ -135,7 +135,7 @@ export default async function Page() {
                     Manage Own Posts
                   </td>
                   <td className="p-3">
-                    <Badge variant="outline" className="bg-muted/50">Enabled</Badge>
+                    <Badge variant="outline" className="bg-muted/30">Enabled</Badge>
                   </td>
                 </tr>
                 <tr className="border-t">
@@ -144,7 +144,7 @@ export default async function Page() {
                     Manage All Posts
                   </td>
                   <td className="p-3">
-                    <Badge variant="outline" className={FULL_POST_ACCESS.success ? "bg-muted/50" : "bg-muted/30"}>
+                    <Badge variant="outline" className={FULL_POST_ACCESS.success ? "bg-muted/30" : "bg-muted/30"}>
                       {FULL_POST_ACCESS.success ? "Enabled" : "Disabled"}
                     </Badge>
                   </td>
@@ -157,14 +157,14 @@ export default async function Page() {
 </TabsContent>
 
     <TabsContent value="security">
-      {/* Change Password Card */}
+      {/* Mudar Senha Card */}
       <Card className="mb-6 bg-card/50 pb-10">
-        <CardHeader className="bg-muted/50 py-6">
+        <CardHeader className="bg-muted/30 py-6">
           <CardTitle className="flex items-center gap-2">
             <Lock className="size-4 text-primary" />
-            Change Password
+            Mudar Senha
           </CardTitle>
-          <CardDescription>Update your account password</CardDescription>
+          <CardDescription>Altere a senha da sua conta</CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
           <ChangePasswordForm />

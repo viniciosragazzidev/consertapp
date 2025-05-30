@@ -34,30 +34,30 @@ export const ChangePasswordForm = () => {
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="currentPassword">Current Password</Label>
+        <Label htmlFor="currentPassword">Senha Atual</Label>
         <Input
           type="password"
           id="currentPassword"
           name="currentPassword"
-          placeholder="Enter current password"
+          placeholder="Digite sua senha atual"
           className="bg-background"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="newPassword">New Password</Label>
+        <Label htmlFor="newPassword">Nova Senha</Label>
         <Input
           type="password"
           id="newPassword"
           name="newPassword"
-          placeholder="Enter new password"
+          placeholder="Digite sua nova senha"
           className="bg-background"
         />
       </div>
 
-      <Button type="submit" disabled={isPending} variant="outline" className="w-full">
+      <Button type="submit" disabled={isPending} variant="default" className="w-full">
         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Change Password
+        Mudar Senha
       </Button>
     </form>
   )

@@ -22,7 +22,7 @@ export function JoinAsGuestScreen({ onBack }: JoinAsGuestScreenProps) {
 
       <Card>
         <CardHeader className="text-center">
-          <div className="mx-auto w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto w-20 h-20 bg-muted/30 rounded-full flex items-center justify-center mb-4">
             <Construction className="w-10 h-10 text-muted-foreground" />
           </div>
           <CardTitle>Em Breve</CardTitle>

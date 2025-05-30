@@ -123,7 +123,7 @@ export function FileBrowser() {
               onClick={() => handleFileClick(file)}
             >
               <CardContent className="p-0">
-                <div className="aspect-square flex items-center justify-center bg-muted/50 p-4">
+                <div className="aspect-square flex items-center justify-center bg-muted/30 p-4">
                   {file.type === "folder" ? (
                     <Folder className="h-12 w-12 text-primary" />
                   ) : (
@@ -147,7 +147,7 @@ export function FileBrowser() {
         <div className="border rounded-md overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="bg-muted/50">
+              <tr className="bg-muted/30">
                 <th className="text-left p-3 font-medium">Name</th>
                 <th className="text-left p-3 font-medium">Modified</th>
                 <th className="text-left p-3 font-medium">Size</th>

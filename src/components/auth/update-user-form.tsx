@@ -70,9 +70,9 @@ export const UpdateUserForm = ({ name, image }: UpdateUserFormProps) => {
         />
       </div>
 
-      <Button type="submit" disabled={isPending} variant="outline" className="w-full">
+      <Button type="submit" disabled={isPending} variant="default" className="w-full">
         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Update Perfil
+        Atualizar Perfil
       </Button>
     </form>
   )
