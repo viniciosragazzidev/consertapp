@@ -24,6 +24,7 @@ import { redirect } from "next/navigation";
 import { getOrganizationsByUserId } from "@/actions/organization";
 import { headers } from "next/headers";
 import { auth } from "@/packages/auth/src/auth";
+import OrganizationsSelect from "./organizations-select";
 
 const getInitials = (name?: string | null) => {
 	if (!name) return "SG";
@@ -36,17 +37,8 @@ const getInitials = (name?: string | null) => {
 	return (firstInitial + lastInitial).toUpperCase() || "SG";
 };
 
-export async function Header() {
-  const headersList = await headers()
-
-  const session = await auth.api.getSession({
-    headers: headersList,
-
-  })  
-  if(!session) redirect('/login')
-  const organizationMain = await getOrganizationsByUserId(session?.user.id!);
-  if(organizationMain?.length === 0) redirect('/onboarding')    
-
+export async function Header({organizationMain, session}: {organizationMain: any, session: any}) {
+ 
  
 
 	const userName = session?.user?.name;
@@ -57,33 +49,7 @@ export async function Header() {
 	return (
 		<header className="border-b bg-background">
 			<div className="flex h-16 items-center px-4 gap-4 justify-between">
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="p-0 flex items-center gap-2 font-semibold">
-							{/* Need a logo */}
-					
-							<span>{organizationMain?.[0]?.name}</span>
-							<ChevronDown className="h-4 w-4 ml-1" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="start" className="w-56">
-						<DropdownMenuLabel>Organizações</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-								
-				 { organizations?.map((organization) => (	
-						<DropdownMenuItem key={organization.id}>
-							<Building2 className="mr-2 h-4 w-4" />
-							<span>{organization.name}</span>
-						</DropdownMenuItem>
-						)) }
-						<DropdownMenuSeparator />
-		 
-						<DropdownMenuItem>
-							<Plus className="mr-2 h-4 w-4" />
-							<span>Adicionar nova</span>
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+			<OrganizationsSelect organizations={organizations} organizationMain={organizationMain} />
 				<div className="relative flex-1 max-w-xl">
 					<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 					<Input type="search" placeholder="Search in Drive" className="w-full pl-8 bg-muted/30" />

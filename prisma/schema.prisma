@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -113,6 +114,7 @@ model Organization {
 
   // Relacionamentos
   members OrganizationMember[]
+  invoices Invoice[]
   clients Client[]
   posts   Post[]
 
@@ -156,8 +158,8 @@ model OrganizationMember {
   // Informações específicas do funcionário
   title      String? // Cargo/Posição
   department String?
-  salary     Decimal? @db.Decimal(10, 2)
-  hourlyRate Decimal? @db.Decimal(8, 2)
+  salary     String?
+  hourlyRate String?
 
   // Permissões específicas
   canManageClients  Boolean @default(false)
@@ -223,7 +225,6 @@ model Client {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   // Relacionamentos
-  projects ClientProject[]
   invoices Invoice[]
 
   @@index([organizationId, status])
@@ -234,24 +235,7 @@ model Client {
   @@map("clients")
 }
 
-model ClientProject {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  name        String
-  description String?
-  status      String    @default("ACTIVE") // ACTIVE, COMPLETED, CANCELLED, ON_HOLD
-  startDate   DateTime?
-  endDate     DateTime?
-  budget      Decimal?  @db.Decimal(12, 2)
-
-  clientId String
-  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
-
-  @@index([clientId, status])
-  @@map("client_projects")
-}
 
 model Invoice {
   id        String   @id @default(uuid())
@@ -259,17 +243,44 @@ model Invoice {
   updatedAt DateTime @updatedAt
 
   invoiceNumber String    @unique
-  amount        Decimal   @db.Decimal(12, 2)
+  amount       String?
   dueDate       DateTime
   paidDate      DateTime?
   status        String    @default("PENDING") // PENDING, PAID, OVERDUE, CANCELLED
 
+  invoiceItems InvoiceItem[]
+
   clientId String
   client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([clientId, status])
   @@index([dueDate])
   @@map("invoices")
+}
+
+model InvoiceItem {
+  id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  name String
+  model String
+  brand String
+  color String?
+  ocurrenceDescription String?
+  acessories String?
+
+  status        String    @default("PENDING") // PENDING, PAID, OVERDUE, CANCELLED
+  technicalResponsible String?
+  amount        String?
+
+
+  invoiceId String
+  invoice  Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 }
 
 model Session {

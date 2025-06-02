@@ -12,13 +12,13 @@ export type OnboardingStep = "welcome" | "create-org" | "invite-members" | "join
 export interface OrganizationData {
   name: string
   slug: string
-  description: string
-  website: string
-  address: string
-  city: string
-  state: string
-  country: string
-  zipCode: string
+  description: string 
+  website?: string | undefined
+  address?: string | undefined
+  city?: string | undefined
+  state?: string | undefined
+  country?: string | undefined
+  zipCode?: string | undefined
 }
 
 export interface InviteMember {

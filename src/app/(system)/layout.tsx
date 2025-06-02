@@ -2,10 +2,12 @@
 
 import { getOrganizationsByUserId } from "@/actions/organization";
 import { Header } from "@/components/header";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 import { Sidebar } from "@/components/sidebar";
 import { auth } from "@/packages/auth/src/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 
 
@@ -25,11 +27,11 @@ export default async function DashboardLayout({
   if(organizationMain?.length === 0) redirect('/onboarding')      
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <Header />
+      <Header organizationMain={organizationMain} session={session} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 overflow-auto p-6">
-            {children}
+            <Suspense fallback={<LoadingSkeleton />}>{children}</Suspense>
         </main>
       </div>
     </div>

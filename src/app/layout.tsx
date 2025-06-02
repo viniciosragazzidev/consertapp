@@ -4,6 +4,8 @@ import { Inter } from "next/font/google"
 
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
+import { Suspense } from "react"
+import LoadingSkeleton from "@/components/LoadingSkeleton"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -27,7 +29,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >        <Toaster />
 
-          {children}
+        <Suspense fallback={<LoadingSkeleton />}>{children}</Suspense>
         </ThemeProvider>
       </body>
     </html>

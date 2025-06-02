@@ -22,12 +22,36 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
  
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const pathname  = usePathname();
+  const current = pathname.split("/")[1];
+  const navItems = [
+    {
+      name: "Visão Geral",
+      href: "/",
+      icon: <Eye className="h-4 w-4" />,
+    },
+    {
+      name: "Serviços",
+      href: "/services",
+      icon: <Wrench className="h-4 w-4" />,
+    },
+    {
+      name: "Clientes",
+      href: "/clients",
+      icon: <Users2 className="h-4 w-4" />,
+    },
+    {
+      name: "Vendas",
+      href: "/sales",
+      icon: <ShoppingBag className="h-4 w-4" />,
+    },
+  ]
 
   return (
   <>
@@ -42,28 +66,23 @@ Nova organização
 
         <nav className="space-y-1">
   
-                     <Button onClick={() => router.push("/")} variant="ghost" className="w-full justify-start gap-2">
-
-                  <Eye className="h-4 w-4" />
-                  <span>Visão Geral</span>
-              </Button>
+             
           
 
-          <Button onClick={() => router.push("/services")} variant="ghost" className="w-full justify-start gap-2">
-            <Wrench className="h-4 w-4" />
-Serviços          </Button>
-          <Button variant="ghost" onClick={() => router.push("/clients")} className="w-full justify-start gap-2">
-            <Users2 className="h-4 w-4" />
-            Clientes
-          </Button>
-          <Button variant="ghost" onClick={() => router.push("/sales")} className="w-full justify-start gap-2">
-            <ShoppingBag className="h-4 w-4" />
-            Vendas
-          </Button>
-          <Button variant="ghost" onClick={() => router.push("/stock")} className="w-full justify-start gap-2">
-            <Box className="h-4 w-4" />
-            Estoque
-          </Button>
+          {navItems.map((item) => (
+            <Button
+              key={item.name}
+              variant="ghost"
+              className={`w-full hover:bg-primary/5 justify-start gap-2 ${item.href === `/${current}` ? "bg-primary/5 border border-primary/5" : ""}`}
+              onClick={() => router.push(item.href)}
+            >
+ <span className={`${item.href === `/${current}` ? "text-primary" : ""}`}>
+              {item.icon}
+
+ </span>
+              {item.name}
+            </Button>
+          ))}
         </nav>
       </div>
 

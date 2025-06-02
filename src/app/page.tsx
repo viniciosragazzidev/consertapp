@@ -19,7 +19,7 @@ export default async function DrivePage() {
     if(organizationMain?.length === 0) redirect('/onboarding')    
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <Header />
+      <Header organizationMain={organizationMain} session={session} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 overflow-auto p-6">

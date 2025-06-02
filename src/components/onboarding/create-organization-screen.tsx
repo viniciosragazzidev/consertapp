@@ -1,14 +1,15 @@
 "use client"
 
-import type React from "react"
-
+import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, ArrowRight, Building2 } from "lucide-react"
-import { useState } from "react"
 import type { OnboardingStep, OrganizationData } from "@/app/onboarding/page"
 
 interface CreateOrganizationScreenProps {
@@ -18,6 +19,21 @@ interface CreateOrganizationScreenProps {
   setOrganizationData: (data: OrganizationData) => void
 }
 
+// 🧪 Schema de validação com zod
+const organizationSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  slug: z.string().min(1, "Slug é obrigatório"),
+  description: z.string(),
+  website: z.string().url("URL inválida").optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  zipCode: z.string().optional(),
+  country: z.string().optional(),
+})
+
+type OrganizationFormData = z.infer<typeof organizationSchema>
+
 export function CreateOrganizationScreen({
   onNext,
   onBack,
@@ -26,38 +42,39 @@ export function CreateOrganizationScreen({
 }: CreateOrganizationScreenProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleInputChange = (field: keyof OrganizationData, value: string) => {
-    setOrganizationData({
-      ...organizationData,
-      [field]: value,
-    })
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<OrganizationFormData>({
+    resolver: zodResolver(organizationSchema),
+    mode: "onChange",
+    defaultValues: organizationData,
+  })
 
-    // Auto-generate slug from name
-    if (field === "name") {
-      const slug = value
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "")
-      setOrganizationData({
-        ...organizationData,
-        [field]: value,
-        slug: slug,
-      })
-    }
-  }
+  // ✨ Auto atualizar o slug com base no nome
+  const nameValue = watch("name")
+  useEffect(() => {
+    const slug = nameValue
+      ?.toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+    setValue("slug", slug)
+  }, [nameValue, setValue])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: OrganizationFormData) => {
     setIsLoading(true)
 
-    // Simulate API call
+    // Salva os dados no estado pai
+    setOrganizationData(data)
+
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     setIsLoading(false)
     onNext("invite-members")
   }
-
-  const isFormValid = organizationData.name && organizationData.slug
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -75,100 +92,55 @@ export function CreateOrganizationScreen({
           <CardDescription>Essas informações podem ser alteradas posteriormente</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Nome da Organização *</Label>
-                <Input
-                  id="name"
-                  value={organizationData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="Minha Empresa LTDA"
-                  required
-                />
+                <Input id="name" {...register("name")} placeholder="Minha Empresa LTDA" />
+                {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="slug">Identificador (Slug) *</Label>
-                <Input
-                  id="slug"
-                  value={organizationData.slug}
-                  onChange={(e) => handleInputChange("slug", e.target.value)}
-                  placeholder="minha-empresa"
-                  required
-                />
+                <Input id="slug" {...register("slug")} placeholder="minha-empresa" />
+                {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="description">Descrição</Label>
-              <Textarea
-                id="description"
-                value={organizationData.description}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleInputChange("description", e.target.value)}
-                placeholder="Descreva sua organização..."
-                rows={3}
-              />
+              <Textarea id="description" {...register("description")} placeholder="Descreva sua organização..." rows={3} />
+              {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="website">Website</Label>
-              <Input
-                id="website"
-                type="url"
-                value={organizationData.website}
-                onChange={(e) => handleInputChange("website", e.target.value)}
-                placeholder="https://www.exemplo.com"
-              />
+              <Input id="website" type="url" {...register("website")} placeholder="https://www.exemplo.com" />
+              {errors.website && <p className="text-sm text-red-500">{errors.website.message}</p>}
             </div>
 
             <div className="space-y-4">
               <h3 className="font-medium">Endereço</h3>
               <div className="space-y-2">
                 <Label htmlFor="address">Endereço</Label>
-                <Input
-                  id="address"
-                  value={organizationData.address}
-                  onChange={(e) => handleInputChange("address", e.target.value)}
-                  placeholder="Rua, número, complemento"
-                />
+                <Input id="address" {...register("address")} placeholder="Rua, número, complemento" />
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="city">Cidade</Label>
-                  <Input
-                    id="city"
-                    value={organizationData.city}
-                    onChange={(e) => handleInputChange("city", e.target.value)}
-                    placeholder="São Paulo"
-                  />
+                  <Input id="city" {...register("city")} placeholder="São Paulo" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="state">Estado</Label>
-                  <Input
-                    id="state"
-                    value={organizationData.state}
-                    onChange={(e) => handleInputChange("state", e.target.value)}
-                    placeholder="SP"
-                  />
+                  <Input id="state" {...register("state")} placeholder="SP" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="zipCode">CEP</Label>
-                  <Input
-                    id="zipCode"
-                    value={organizationData.zipCode}
-                    onChange={(e) => handleInputChange("zipCode", e.target.value)}
-                    placeholder="00000-000"
-                  />
+                  <Input id="zipCode" {...register("zipCode")} placeholder="00000-000" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="country">País</Label>
-                <Input
-                  id="country"
-                  value={organizationData.country}
-                  onChange={(e) => handleInputChange("country", e.target.value)}
-                  placeholder="Brasil"
-                />
+                <Input id="country" {...register("country")} placeholder="Brasil" />
               </div>
             </div>
 
@@ -177,7 +149,7 @@ export function CreateOrganizationScreen({
                 <ArrowLeft className="mr-2 w-4 h-4" />
                 Voltar
               </Button>
-              <Button type="submit" disabled={!isFormValid || isLoading}>
+              <Button type="submit" disabled={!isValid || isLoading}>
                 {isLoading ? "Criando..." : "Continuar"}
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>

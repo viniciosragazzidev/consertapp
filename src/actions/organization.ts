@@ -1,26 +1,42 @@
 "use server"
-
 import { prisma } from "@/packages/db/prisma"
 
-export const getOrganizationsByUserId = async (userId: string) => {
-    
-try {
+import {cache   } from "react";
+import { auth } from "@/packages/auth/src/auth"
+import { headers } from "next/headers"
+import type { OrganizationData, InviteMember } from "@/app/onboarding/page"
+import { revalidatePath } from "next/cache";
+import { Organization } from "@/lib/@types/schema.types";
+export const getOrganizationsByUserId = cache(async (userId: string) => {
+  try {
     const res = await prisma.organization.findMany({
         where: {
             ownerId: userId
         }
     })
-    return res
+    const organizations: Organization[] = res as Organization[]
+    return organizations
 } catch (error) {
     console.log(error)
 }
+})
+
+export const getOrganizationById = cache(async (id: string) => {
+  try {
+    const res = await prisma.organization.findUnique({
+        where: {
+            id
+        }
+    })
+    const organization: Organization = res as Organization
+    return organization
+} catch (error) {
+    console.log(error)
 }
+})
 
 
 
-import { auth } from "@/packages/auth/src/auth"
-import { headers } from "next/headers"
-import type { OrganizationData, InviteMember } from "@/app/onboarding/page"
 
 export async function createOrganizationWithInvites(organizationData: OrganizationData, inviteMembers: InviteMember[]) {
   try {
@@ -93,7 +109,7 @@ export async function createOrganizationWithInvites(organizationData: Organizati
 
       return organization
     })
-
+revalidatePath( '/')
     return { success: true, organization: result }
   } catch (error) {
     console.error("Erro ao criar organização:", error)
@@ -181,7 +197,7 @@ export async function getUserOrganizations() {
       return { success: false, error: "Usuário não autenticado" }
     }
 
-    const organizations = await prisma.organization.findMany({
+    const organizations: Organization[] = await prisma.organization.findMany({
       where: {
         OR: [
           { ownerId: session.user.id },
